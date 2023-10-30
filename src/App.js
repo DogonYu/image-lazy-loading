@@ -1,23 +1,25 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState, useEffect } from 'react';
+import ImageGallery from './ImageGallery';
+
+const IMAGE_COUNT = 12;
 
 function App() {
+  const [images, setImages] = useState([]);
+
+  useEffect(() => {
+    const loadImages = async () => {
+      for (let i = 0; i < IMAGE_COUNT; i++) {
+        const blob = await fetch('https://picsum.photos/400/400').then(res => res.blob());
+        const image = URL.createObjectURL(blob);
+        setImages(prev => [ ...prev, image ]);
+      }
+    }
+    loadImages();
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app">
+      {images.length === IMAGE_COUNT ? <ImageGallery images={images} /> : null}
     </div>
   );
 }
